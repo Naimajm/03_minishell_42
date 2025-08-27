@@ -1,0 +1,17 @@
+minishell$ cat test | < Makefile << . grep a > outfile | cat test
+minishell$ cat test | < Makefile grep a > outfile | cat test
+minishell$ cat test | < Makefile << . grep a > outfile | cat test
+minishell$ cat test | grep a
+minishell$ unset PATH
+minishell$ env | grep PATH=
+minishell$ echo "'hola' '$USER'"
+'hola' 'juagomez'
+minishell$ echo '"hola" "$USER"'
+"hola" "$USER"
+minishell$ echo ''"hola" "$USER"''
+hola juagomez
+minishell$ ls | < noexiste cat | ls
+minishell: `noexiste: No such file or directory
+minishell$ chmod 000 test 
+minishell$ cat test 
+cat: test: Permission denied
