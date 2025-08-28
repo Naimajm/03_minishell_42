@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/25 11:38:22 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 20:09:36 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,8 @@ void	free_iteration_input(t_shell *shell)
 		free(shell->input);
 		shell->input = NULL;
 	}
-	if (shell->commands_list) // Liberar lista comandos iteracion
+	if (shell->commands_list)
 		free_commands_list(&shell->commands_list);
-	//printf(FREE_ITERATION_INPUT);
 }
 
 void	free_commands_list(t_cmd **commands_list)
@@ -41,7 +40,7 @@ void	free_commands_list(t_cmd **commands_list)
 	{
 		next_node = current_node->next;
 		free_matrix(current_node->args);
-		if (current_node->command) // Liberar strings
+		if (current_node->command)
 			free(current_node->command);
 		if (current_node->infile)
 			free(current_node->infile);
@@ -49,13 +48,12 @@ void	free_commands_list(t_cmd **commands_list)
 			free(current_node->outfile);
 		if (current_node->delimiter)
 			free(current_node->delimiter);
-		if (current_node->words_list) // Liberar lista words
+		if (current_node->words_list)
 			free_words_list(&current_node->words_list);
 		free(current_node);
 		current_node = next_node;
 	}
 	*commands_list = NULL;
-	//printf(FREE_COMMANDS_LIST);
 }
 
 void	free_words_list(t_word **words_list)
@@ -69,17 +67,16 @@ void	free_words_list(t_word **words_list)
 	while (current_node)
 	{
 		next_node = current_node->next;
-		if (current_node->raw_w) // Liberar strings
+		if (current_node->raw_w)
 			free(current_node->raw_w);
 		if (current_node->processed_word)
 			free(current_node->processed_word);
-		if (current_node->tokens_list) // Liberar lista de tokens
+		if (current_node->tokens_list)
 			free_tokens_list(&current_node->tokens_list);
 		free(current_node);
 		current_node = next_node;
 	}
 	*words_list = NULL;
-	//printf(FREE_WORDS_LIST);
 }
 
 void	free_tokens_list(t_token **tokens_list)
@@ -93,19 +90,18 @@ void	free_tokens_list(t_token **tokens_list)
 	while (current_node)
 	{
 		next_node = current_node->next;
-		if (current_node->raw_tkn) // Liberar strings
+		if (current_node->raw_tkn)
 			free(current_node->raw_tkn);
 		if (current_node->exp_token)
 			free(current_node->exp_token);
 		if (current_node->noquotes_token)
 			free(current_node->noquotes_token);
-		if (current_node->exp_list) // Liberar lista nodos expand
+		if (current_node->exp_list)
 			free_expands_list(&current_node->exp_list);
-		free(current_node); // Liberar nodo actual
+		free(current_node);
 		current_node = next_node;
 	}
 	*tokens_list = NULL;
-	//printf(FREE_TOKENS_LIST);
 }
 
 void	free_expands_list(t_expand **expands_list)
@@ -119,7 +115,6 @@ void	free_expands_list(t_expand **expands_list)
 	while (current_node)
 	{
 		next_node = current_node->next;
-		// Liberar strings
 		if (current_node->substitution_str)
 			free(current_node->substitution_str);
 		if (current_node->key)
@@ -130,5 +125,4 @@ void	free_expands_list(t_expand **expands_list)
 		current_node = next_node;
 	}
 	*expands_list = NULL;
-	//printf(FREE_EXPANDS_LIST);
 }

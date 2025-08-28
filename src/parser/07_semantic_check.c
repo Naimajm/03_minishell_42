@@ -6,13 +6,12 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 00:15:07 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/17 12:15:24 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 20:07:14 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-//  VALIDACION SEMANTICA ----------------------------------
 static bool	has_executable_word(t_cmd *command);
 static int	validate_multiple_redirections(t_cmd *command);
 
@@ -25,13 +24,13 @@ int	validate_command_semantics(t_shell *shell)
 	current_command = (t_cmd *) shell->commands_list;
 	while (current_command)
 	{
-		if (!has_executable_word(current_command)) // Validar que hay al menos una palabra WORD
+		if (!has_executable_word(current_command))
 		{
 			ft_putendl_fd(ERROR_COMMAND_EMPTY, STDERR_FILENO);
 			shell->exit_status = SYNTAX_ERROR;
 			return (SYNTAX_ERROR);
 		}
-		if (validate_multiple_redirections(current_command) == SYNTAX_ERROR) // Validar redirecciones múltiples del mismo tipo
+		if (validate_multiple_redirections(current_command) == SYNTAX_ERROR)
 		{
 			ft_putendl_fd(ERROR_REDIR_SYNTAX, STDERR_FILENO);
 			shell->exit_status = SYNTAX_ERROR;
@@ -75,7 +74,5 @@ static int	validate_multiple_redirections(t_cmd *command)
 			infile_count++;
 		current_word = current_word->next;
 	}
-	// En bash, múltiples redirecciones del mismo tipo usan la última
-	// Pero podemos validar si queremos ser más estrictos
 	return (SUCCESS);
 }

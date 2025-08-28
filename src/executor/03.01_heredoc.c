@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 12:53:04 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/08 12:23:15 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 19:41:06 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static char	*expand_variable(int *i, char *buffer, char **env, int exit_st)
 	if (start == *i)
 		return (ft_strdup("$"));
 	var = ft_substr_malloc(buffer, start, (*i) - start + 1);
-	value = get_environment_var(env, var); // Funcion de Juanma mi antigua char	*ft_getenv(char **env, char *var)
+	value = get_environment_var(env, var);
 	free(var);
 	if (!value)
 		return (ft_strdup(""));

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   00_utils_builtins_00.c                                :+:      :+:    :+:   */
+/*   00_utils_builtins_00.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 20:03:10 by emcorona          #+#    #+#             */
-/*   Updated: 2025/07/28 12:38:02 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 19:26:47 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 int	ft_mtrx_size(char **mtrx)
 {
@@ -53,7 +53,7 @@ int	ft_valid_env_var(char *env_var)
 			return (0);
 		if (env_var[i] == '+' && env_var[i + 1] == '='
 			&& env_var[i - 1] && ft_isalnum(env_var[i - 1]))
-			return (2); // caso de MIVAR += "test";
+			return (2);
 		i++;
 	}
 	return (1);
@@ -75,7 +75,7 @@ char	**ft_copy_mtrx(char **mtrx)
 	while (mtrx[i])
 	{
 		new_mtrx[i] = ft_strdup(mtrx[i]);
-		if (!new_mtrx[i]) // manejo y liberación en caso de que falle ft_strdup.
+		if (!new_mtrx[i])
 		{
 			free_matrix(new_mtrx);
 			return (NULL);
@@ -86,7 +86,7 @@ char	**ft_copy_mtrx(char **mtrx)
 	return (new_mtrx);
 }
 
-void	ft_swap_mtrx(char **s1, char **s2) // el cambio es permanente porque no modifica la matriz, ni las direcciones originales. modifica el contenido de la matriz a través de los punteros
+void	ft_swap_mtrx(char **s1, char **s2)
 {
 	char	*temp;
 

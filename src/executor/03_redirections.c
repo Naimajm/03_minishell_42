@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 12:52:54 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/27 10:53:20 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 19:40:54 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	redir_heredoc(t_shell *shell, t_cmd *cmd)
 	int		pipe_fd[2];
 	char	*buffer;
 
-	g_signal_flag = 2; // ***Importante: Establece la bandera para Ctrl+C en here-document***
+	g_signal_flag = 2;
 	if (pipe(pipe_fd) == -1)
 		return (perror("Error pipe\n"), 1);
 	while (1)

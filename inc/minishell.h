@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/27 10:45:04 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/27 10:44:45 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include "../lib/gnl/get_next_line.h"
 
 // EXTERNAL LIBRARIES PARSER
-# include <unistd.h>		// write getcwd chdir
+# include <unistd.h>	// write getcwd chdir
 # include <stdio.h>  	// printf aux
 # include <fcntl.h>		// open
 # include <stdbool.h>	// bool
@@ -39,7 +39,7 @@
 # define MAX_PID 999 
 
 // MACROS PARSER-----------------------------------------------------
-// VALORES EXIT_STATUS
+
 # define FAILURE			-1
 # define SUCCESS			0
 # define ERROR				1
@@ -49,26 +49,22 @@
 # define EXIT_SIGINT		130		// Ctrl+'C'
 # define EXIT_SIGQUIT       131    	// Ctrl+'\'
 
-// ERRORES GENERALES
 # define ERROR_ENVIRONMENT "Error\nEnvironment unavailable or empty\n"
 # define ERROR_OPEN_FILE "Error\nOpening file\n"
 # define ERROR_INPUT_READER "Error\nError read input\n"
 # define ERROR_CHECK_SYNTAX "Error\nCheck syntax input Error\n"
 # define ERROR_ADVANCE_INDEX "Error\nIndex advance error\n"
 
-// ERRORES DE SINTAXIS Y PARSING
 # define ERROR_QUOTE_SYNTAX "Error\nSyntax error: Unmatched quotes detected\n"
 # define ERROR_REDIR_SYNTAX "Error\nSyntax error: Invalid redirection syntax\n"
 # define ERROR_PIPE_SYNTAX "Error\nSyntax error: Invalid pipe syntax\n"
 
-// ERRORES CONSTRUCCION
 # define ERROR_INIT "Error\n Initialization error\n" 
 # define ERROR_COMMAND_INIT "Error\n Command structure initialization failed\n"
 # define ERROR_WORD_INIT "Error\n Word structure initialization failed\n" 
 # define ERROR_TOKEN_INIT "Error\n Token structure initialization failed\n" 
 # define ERROR_EXPAND_INIT "Error\n Expand structure initialization failed\n"
 
-// ERRORES DE VALIDACIÓN
 # define ERROR_INVALID_INPUT	"Error\n Invalid input parameter\n"
 # define ERR_MEM_ALLOC		"Error\n Memory allocation failed\n"
 
@@ -87,30 +83,27 @@
 # define FREE_EXPANDS_LIST		"Free\n Expands List...\t\t\t OK\n"
 # define FREE_MATRIX			"Free\n Cleaning matrix...\t\t\t OK\n"
 
-// categorizacion WORDS
-# define WORD					'W'		// W -> palabra no expandido (NO_QUOTES, SINGLE_QUOTES, DOUBLE_QUOTES)
-# define OUTFILE				'O'		// 1 -> operador > OUTFILE
-# define APPEND					'A'		// 2 -> operador >> APPEND
-# define INFILE					'I'		// 3 -> operador < INFILE
-# define HERE_DOC				'H'		// 4 -> operador << HERE_DOC
-# define PIPE					'P'		// 5 -> operador | PIPE
+# define WORD					'W'
+# define OUTFILE				'O'
+# define APPEND					'A'
+# define INFILE					'I'
+# define HERE_DOC				'H'
+# define PIPE					'P'
 
-// categorizacion TOKENS
-# define NO_QUOTES				1		// 1 -> palabras sin comillas
-# define SINGLE_QUOTES			2		// 2 -> palabras con comillas simples -> literal
-# define DOUBLE_QUOTES			3		// 3 -> palabras con comillas dobles -> expansion variables
-# define OPERATOR				4		// 4 -> operador (< << > >> |)
+# define NO_QUOTES				1
+# define SINGLE_QUOTES			2
+# define DOUBLE_QUOTES			3
+# define OPERATOR				4
 
-// categorizacion VARIABLES EXPANDIDAS
-# define BASIC_EXPANSION		1		// 1 -> expansion basica
-# define CURLY_B				2		// 2 -> expansion basica con llaves {}
-# define LAST_EXIT_STATUS		3		// 3 -> caso especial $? -> ultimo exit_status
-# define LITERAL				4		// 4 -> caso especial \$ -> valor literal
+# define BASIC_EXPANSION		1
+# define CURLY_B				2
+# define LAST_EXIT_STATUS		3
+# define LITERAL				4
 
 // STRUCT -----------------------------------------------------
 
 // GLOBAL VARIABLE
-extern int	g_signal_flag; // MENSAJE DE NORMINETTE :Notice: GLOBAL_VAR_DETECTED  (line: 113, col:   1):     Global variable present in file. Make sure it is a reasonable choice.
+extern int	g_signal_flag;
 
 // VARIABLES EXPANDIDAS
 typedef struct s_expand
@@ -163,16 +156,16 @@ typedef struct s_data_word
 
 typedef struct s_cmd
 {
-	char			*command;// NUEVO -> trozo input perteneciente a este proceso
-	char			**args;// Array de argumentos
-	char			*infile;// Archivo de entrada	
-	char			*outfile;// Archivo de salida
-	char			*delimiter;// heredoc_delimiter
-	bool			append;// modo append
-	bool			hd;// modo heredoc
-	bool			is_btn;// flag si el comando es builtin
+	char			*command;
+	char			**args;
+	char			*infile;
+	char			*outfile;
+	char			*delimiter;
+	bool			append;
+	bool			hd;
+	bool			is_btn;
 	int				exit_status;
-	t_word			*words_list;// NUEVO LISTA ASOCIADA DE PALABRAS + OPERADORES30.
+	t_word			*words_list;
 	struct s_cmd	*next;
 }					t_cmd;
 
@@ -183,83 +176,77 @@ typedef struct s_shell
 	char		**environment;
 	int			exit_status;
 	int			last_exit_status;
-	char		**readonly_vars;// EMI -> GESTION DE VARIABLE DE SOLO LECTURA DE LA BUILTIN UNSET
+	char		**readonly_vars;
 	t_cmd		*commands_list;
 }				t_shell;
 
 // FUNCTIONS ------------------------------------------
 
 //SRC------------------------------------------------
-// 00_main.c 				# Función main 
+// 00_main.c 
 int			main(int argc, char **argv, char **environment);
-void		cleanup_minishell(t_shell *shell);//11_test_parser.c 
+void		cleanup_minishell(t_shell *shell);
 
-// 01_execute_shell.c		# loop principal Shell
-int			execute_shell(t_shell *shell); // TODO: EN EL OTRO REPO LA HEMOS DEJADO COMO VOID, PORQUE NO ESTAMOS VERIFICANDO EL RETORNO
-void		process_commands(t_shell *shell); //11_test_parser.c 
+// 01_execute_shell.c
+void		execute_shell(t_shell *shell);
+void		process_commands(t_shell *shell);
 
 // END SRC----------------------------------------------
 
 /// PARSER -------------------------------------------
-// 01.1_check_syntax.c		# Validacion sintaxis input
+// 01.1_check_syntax.c
 int			validate_syntax(t_shell *shell);
 
-/// ANÁLISIS SINTÁCTICO -------------------------------------------
-// 02_command_generate.c	# Análisis sintáctico inicial
+// 02_command_generate.c
 void		create_commands_structure(t_shell *shell);
 
-// 02.1_command_check.c		# Validacion sintaxis estructura comandos
+// 02.1_command_check.c
 int			validate_command_structure(t_shell *shell);
 
-// 02.2_command_builder.c	# Constructor de comandos
+// 02.2_command_builder.c
 void		add_command_node(t_cmd **commands_list, char *input);
 
-/// ANÁLISIS LÉXICO -------------------------------------------
-// 03_lexical_analyzer.c	# Análisis léxico
+// 03_lexical_analyzer.c
 void		lexical_analyzer(t_cmd *current_command, t_shell *shell);
 
-// 03.1_word_builder.c		# Constructor de palabras
-void		print_words_list(t_word *word_list);
+// 03.1_word_builder.c
 int			create_word(t_word **word_list, t_data_word *d_word);
 t_word		*find_word_last_node(t_word *word_list);
 
-/// TOKENIZACIÓN -------------------------------------------
-// 04_tokenizer.c			# Tokenización
+// 04_tokenizer.c
 void		tokenizer(t_word *words_list, t_shell *shell);
 
-// 04.1_token_builder.c		# Constructor de tokens
+// 04.1_token_builder.c
 int			create_token(t_token **token_list, t_data_token *data_token);
-int			not_is_special_tkn(t_data_token	*d_tkn, int i); // se necesita para reducir 25 lineas en el 04
+int			not_is_special_tkn(t_data_token	*d_tkn, int i);
 void		print_tokens_list(t_token *token_list);
 
-/// EXPANSIÓN DE VARIABLES -------------------------------------------
-//  05_variable_expander.c	# Expansión de variables
+//  05_variable_expander.c
 void		variable_expander(t_word *words_list, t_shell *shell);
 
-//  05.1_expand_list.c		# Lista de expansiones
+//  05.1_expand_list.c
 int			basic_expander(t_token *token, int first_index);
 int			last_exit_status_expander(t_token *token, int first_index);
 int			curly_braces_expander(t_token *token, int first_i, int final_i,
 				bool success);
 int			literal_expander(t_token *token, int first_index, bool success);
 
-//  05.2_expand_extractor.c	# Extractor de variables
+//  05.2_expand_extractor.c
 char		*extract_key(char *token, int first_index);
 char		*get_environment_var(char **env, char *variable);
 
-//	05.3_expand_builder.c	 # Constructor de expansiones
+//	05.3_expand_builder.c
 void		print_expand_nodes_list(t_expand *expand_list);
 int			insert_expand_node_value(t_token *token, int last_pos);
 t_expand	*add_expand_node(t_expand **expand_list, char *subst_var,
 				int first_index, int expand_type);
 
-//  05.4_dequotizer.c		# Eliminación de comillas
+//  05.4_dequotizer.c
 void		dequotize_tokens(t_word *words_list, t_shell *shell);
 void		update_quote_state(char character, bool *in_single_quotes,
 				bool *in_double_quotes);
 
-/// PROCESAMIENTO FINAL -------------------------------------------
-// 06_word_processor.c		
+// 06_word_processor.c
 void		generate_processed_word(t_word *words_list, t_shell *shell);
 
 // 07_semantic_check.c
@@ -274,8 +261,14 @@ int			process_outfile(t_cmd *command, t_word *word);
 int			process_append(t_cmd *command, t_word *word);
 int			process_heredoc(t_cmd *command, t_word *word);
 
-/// UTILIDADES Y TESTING -------------------------------------------
-// 10_utils_core.c		 # Utilidades gestion comillas
+// 09_free_manager.c
+void		free_iteration_input(t_shell *shell);
+void		free_commands_list(t_cmd **commands_list);
+void		free_words_list(t_word **words_list);
+void		free_tokens_list(t_token **token_list);
+void		free_expands_list(t_expand **expands_list);
+
+// 10_utils_core.c
 int			find_pipe_outside_quotes(char *input, int start_index);
 int			find_redirection_outside_quotes(char *input, int start_index);
 int			find_word_end_outside_quotes(char *input, int start_index);
@@ -291,28 +284,12 @@ void		free_matrix(char **matrix);
 int			is_expansion_char(char character);
 int			is_space(char character);
 
-// 10.2_utils_basic.c		# Utilidades básicas
+// 10.2_utils_basic.c
 int			get_operator_length(char *input, int index);
 int			is_word_delimiter(char character);
 int			is_redirection(char character);
 int			is_pipe(char character);
 int			is_quote(char character);
-
-// 10.2_free_manager.c		# Gestión de memoria
-void		free_iteration_input(t_shell *shell);
-void		free_commands_list(t_cmd **commands_list);
-void		free_words_list(t_word **words_list);
-void		free_tokens_list(t_token **token_list);
-void		free_expands_list(t_expand **expands_list);
-
-// 10.3_utils_debug.c 		# Utilidades de debug
-void		print_commands_list(t_cmd *commands_list);
-void		print_config_shell(t_shell *shell);
-void		print_strings_array(char **array);
-
-// 11_test_parser.c			# Testing y debugging
-void		test_basic_parser(t_shell *shell);
-void		test_complex_parser(t_shell *shell);
 
 // ------------------------------------
 // END PARSER--------------------------
@@ -334,7 +311,6 @@ void		ft_shellevel(t_shell *shell);
 // 01_signals.c
 void		setup_signals(void); // src/01_execute_shell.c
 void		ft_handle_sig_quit(int signum);
-
 // 02.00_executer.c
 void		exec_commands(t_shell *ms); // src/01_execute_shell.c
 
@@ -345,7 +321,7 @@ void		execute_command(t_shell *shell, t_cmd *cmd); // 02.00_executer.c
 int			redirections(t_shell *shell, t_cmd *cmd); // 02.00_executer.c
 
 // 03.01_heredoc.c
-char		*expand_heredoc(char *buffer, char **env, int exit_st); // 03_redirec
+char		*expand_heredoc(char *buffer, char **env, int exit_st); // 03_redi
 
 // BUILTINS-------------------------------------------------------
 //00_exec_builtins.c

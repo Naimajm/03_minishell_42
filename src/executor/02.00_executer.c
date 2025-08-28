@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 12:52:36 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/26 21:12:10 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/26 17:23:11 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static void	child_process(t_cmd *cmd, int prev_fd,
 {
 	if (redirections(shell, cmd) == 1)
 		exit (1);
-	if (prev_fd != -1 && !cmd->infile) // los errores de redireccionamiento de priorizar entre | y < ya está,  cuando hay un nombre en infile no modificas o duplicas el STDINPUT y asi prioriza en el redireccionamiento.
+	if (prev_fd != -1 && !cmd->infile)
 		dup2(prev_fd, STDIN_FILENO);
 	if (cmd->next && !cmd->outfile)
 		dup2(pipe_fd[1], STDOUT_FILENO);
@@ -98,7 +98,6 @@ static void	child_process(t_cmd *cmd, int prev_fd,
 	else
 		execute_command(shell, cmd);
 	ft_putendl_fd("Error child process", STDERR_FILENO);
-	//perror("Error executing\n");
 	exit (126);
 }
 
@@ -114,7 +113,7 @@ static void	parent_process(t_shell *shell, int *prev_fd, int pipe_fd[2])
 	else
 		*prev_fd = -1;
 	g_signal_flag = 1;
-	signal(SIGQUIT, ft_handle_sig_quit); // MANEJAR CORRECTAMENTE EL CONTROL SLASH
+	signal(SIGQUIT, ft_handle_sig_quit);
 }
 
 static void	wait_all_processes(pid_t *pids, t_shell *shell)
@@ -129,7 +128,7 @@ static void	wait_all_processes(pid_t *pids, t_shell *shell)
 	{
 		waitpid(pids[i], &status, 0);
 		i++;
-		if (!cmd->next) //chequeamos el exitstatus
+		if (!cmd->next)
 		{
 			if (WIFEXITED(status))
 				shell->exit_status = WEXITSTATUS(status) % 256;

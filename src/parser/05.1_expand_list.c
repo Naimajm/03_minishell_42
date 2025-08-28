@@ -6,13 +6,12 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/27 10:57:52 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 20:12:44 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-// FUNCIONES AUXILIARES EXTRACCION SUBSTITUTION STRING
 static int	extract_single_variable(char *raw_token, int start_index);
 int			last_exit_status_expander(t_token *token, int first_index);
 int			curly_braces_expander(t_token *token, int first_i, int final_i,
@@ -27,16 +26,16 @@ int	basic_expander(t_token *token, int index)
 	char			*key;
 
 	success = true;
-	data_token.token_len = extract_single_variable(token->raw_tkn, index); // Extraer solo UNA variable, no todo el resto del token
+	data_token.token_len = extract_single_variable(token->raw_tkn, index);
 	data_token.raw_w = ft_substr(token->raw_tkn,
-			index, data_token.token_len); // Extraer la variable individual
+			index, data_token.token_len);
 	expand_node = add_expand_node(&token->exp_list,
 			data_token.raw_w, index, BASIC_EXPANSION);
-	key = extract_key(data_token.raw_w, 1); // EXTRACCION KEY --// Extraer la key (sin el $) y asignarla // Saltar el $
+	key = extract_key(data_token.raw_w, 1);
 	expand_node->key = ft_strdup(key);
-	expand_node->last_index = index + data_token.token_len - 1; // Calcular last_index del nodo expand (como en curly_braces_expander)	
+	expand_node->last_index = index + data_token.token_len - 1;
 	if (!token || data_token.token_len <= 0 || !data_token.raw_w
-		|| !expand_node || !key || !expand_node->key) // data_token.token_len <= 0  Saltar solo el $ si no es válido
+		|| !expand_node || !key || !expand_node->key)
 		success = false;
 	free(data_token.raw_w);
 	free(key);
@@ -51,16 +50,13 @@ static int	extract_single_variable(char *raw_token, int start_index)
 
 	if (!raw_token || !is_expansion_char(raw_token[start_index]))
 		return (0);
-	index = start_index + 1; // Saltar el $
-	// CASO $ UNICO " $  " 
+	index = start_index + 1;
 	if (is_space(raw_token[index]) || !raw_token[index])
-		return (1); // Solo el carácter $	
-	if (raw_token[index] == '?') // Caso $?
-		return (2); // $?
-	// Verificar que empiece con letra o _
+		return (1);
+	if (raw_token[index] == '?')
+		return (2);
 	if (!ft_isalpha(raw_token[index]) && raw_token[index] != '_')
-		return (1); // Solo el $ (inválido) 
-	// Extraer nombre de variable válido
+		return (1);
 	while ((ft_isalnum(raw_token[index]) || raw_token[index] == '_')
 		&& raw_token[index])
 		index++;
@@ -101,19 +97,19 @@ int	curly_braces_expander(t_token *token, int first_i, int final_i,
 
 	if (!token)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
-	final_i = first_i + 2; // Saltar "${"
+	final_i = first_i + 2;
 	while (token->raw_tkn[final_i] && token->raw_tkn[final_i] != '}')
 		final_i++;
-	if (token->raw_tkn[final_i] != '}') // No se encontró llave de cierre
+	if (token->raw_tkn[final_i] != '}')
 		return (FAILURE);
 	substi_str = ft_substr(token->raw_tkn, first_i, (final_i - first_i + 1));
 	len_input = ft_strlen(substi_str);
 	exp_node = add_expand_node(&token->exp_list, substi_str, first_i, CURLY_B);
-	key = ft_strtrim(extract_key(substi_str, 1), "{}"); // cortar {} // key = ft_strtrim(key_temp, "{}");  -> key_temp = extract_key(substi_str, 1); // index 0 -> $
+	key = ft_strtrim(extract_key(substi_str, 1), "{}");
 	exp_node->key = ft_strdup(key);
 	if (!substi_str || !exp_node || !key || !exp_node->key)
 		success = false;
-	exp_node->last_index = first_i + len_input - 1; // calcular last_index del nodo expand
+	exp_node->last_index = first_i + len_input - 1;
 	free(key);
 	free(substi_str);
 	if (!success)
@@ -131,18 +127,18 @@ int	literal_expander(t_token *token, int index, bool success)
 
 	if (!token)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
-	first_index = index - 1; // coger cchar anterior '\'
+	first_index = index - 1;
 	len_input = extract_single_variable(token->raw_tkn, first_index + 1);
-	substitution_str = ft_substr(token->raw_tkn, first_index, len_input + 1); // EXTRAER SOLO LA PARTE DEL ESCAPE
+	substitution_str = ft_substr(token->raw_tkn, first_index, len_input + 1);
 	expand_node = add_expand_node(&token->exp_list, substitution_str,
 			first_index, LITERAL);
-	key = ft_substr(substitution_str, 1, ft_strlen(substitution_str) - 1); // FASE EXTRACT KEY !! // Saltar '\'
-	expand_node->key = ft_strdup(key); // ASIGNAR KEY
+	key = ft_substr(substitution_str, 1, ft_strlen(substitution_str) - 1);
+	expand_node->key = ft_strdup(key);
 	if (!substitution_str || !key || !expand_node || !expand_node->key)
 		success = false;
-	expand_node->last_index = index + len_input - 1; // Calcular last_index del nodo expand 
+	expand_node->last_index = index + len_input - 1;
 	free(key);
-	free(substitution_str); //TODO: LIBERAR expand_node Y expand_node->key O YA SE LIBERA AL LIMPIAR????
+	free(substitution_str);
 	if (!success)
 		return (ft_putendl_fd(ERR_MEM_ALLOC, STDERR_FILENO), FAILURE);
 	return (len_input);

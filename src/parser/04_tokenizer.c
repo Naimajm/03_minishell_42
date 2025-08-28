@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/18 16:46:21 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 19:58:37 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static int	word_tokenizer(t_word *word);
 static int	noquotes_tokenizer(t_word *word, int start_index);
 static int	quotes_tokenizer(t_word *word, int start_index);
 static int	operator_tokenizer(t_word *word, int start_index);
-// static int	not_is_special_tkn(t_data_token	*d_tkn, int i); se llama aquí pero se incluye en el 04.1
 
 void	tokenizer(t_word *words_list, t_shell *shell)
 {
@@ -45,24 +44,23 @@ static int	word_tokenizer(t_word *word)
 	index = 0;
 	while (raw_word[index])
 	{
-		while (is_space(raw_word[index])) // ignorar espacios iniciales 
+		while (is_space(raw_word[index]))
 			index++;
-		if (!raw_word[index]) // Verificar si llegamos al final después de saltar espacios
+		if (!raw_word[index])
 			break ;
-		if (is_quote(raw_word[index])) // CLASIFICACION TOKENS //  '\'' -> LITERAL // '\"' -> EXPANSION VARIABLE
+		if (is_quote(raw_word[index]))
 			token_len = quotes_tokenizer(word, index);
 		else if (is_redirection(raw_word[index]) || is_pipe(raw_word[index]))
 			token_len = operator_tokenizer(word, index);
-		else // 1º letra palabra simple sin inicio comillas
+		else
 			token_len = noquotes_tokenizer(word, index);
 		if (token_len == FAILURE)
 			return (FAILURE);
-		index = advance_index_by_length(index, token_len); // GESTION CASOS ESPECIALES AVANCE INDEX
+		index = advance_index_by_length(index, token_len);
 	}
 	return (SUCCESS);
 }
 
-// ORIGINAL
 static int	noquotes_tokenizer(t_word *word, int start_index)
 {
 	int				i;
@@ -73,14 +71,14 @@ static int	noquotes_tokenizer(t_word *word, int start_index)
 	d_tkn.raw_w = (char *) word->raw_w;
 	i = start_index;
 	d_tkn.start_index = start_index;
-	if (is_expansion_char(d_tkn.raw_w[i])) // DELIMITADOR LIMITES CARACTERES TOKEN ---// CASO VARIABLES EXPANDIDAS	Si empezamos con $, procesamos solo esa variable
+	if (is_expansion_char(d_tkn.raw_w[i]))
 	{
-		i++; // Saltar el $
-		if (d_tkn.raw_w[i] == '?') // Caso $?
+		i++;
+		if (d_tkn.raw_w[i] == '?')
 			i++;
-		else if (ft_isalpha(d_tkn.raw_w[i]) || d_tkn.raw_w[i] == '_') // Caso variable normal: $VARIABLE
+		else if (ft_isalpha(d_tkn.raw_w[i]) || d_tkn.raw_w[i] == '_')
 			while ((ft_isalnum(d_tkn.raw_w[i]) || d_tkn.raw_w[i] == '_')
-				&& d_tkn.raw_w[i]) // Extraer solo el nombre de la variable
+				&& d_tkn.raw_w[i])
 				i++;
 	}
 	else
@@ -88,7 +86,7 @@ static int	noquotes_tokenizer(t_word *word, int start_index)
 	d_tkn.token_len = i - start_index;
 	d_tkn.token_type = NO_QUOTES;
 	create_token(&word->tokens_list, &d_tkn);
-	return (d_tkn.token_len); // CREAR NODO TOKEN ------
+	return (d_tkn.token_len);
 }
 
 static int	quotes_tokenizer(t_word *word, int start_index)
@@ -101,20 +99,17 @@ static int	quotes_tokenizer(t_word *word, int start_index)
 	if (!word || !word->raw_w || start_index < 0)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
 	d_token.raw_w = (char *) word->raw_w;
-	delimiter = d_token.raw_w[start_index]; // Comilla de apertura
-	// CLASIFICAR TIPO TOKEN 
+	delimiter = d_token.raw_w[start_index];
 	if (delimiter == '\"')
 		d_token.token_type = DOUBLE_QUOTES;
 	else if (delimiter == '\'')
 		d_token.token_type = SINGLE_QUOTES;
 	else
 		d_token.token_type = NO_QUOTES;
-	// DELIMITADOR LIMITES CARACTERES TOKEN --------------------------
 	end_position = find_matching_quote_position(d_token.raw_w, start_index);
 	if (end_position == FAILURE)
 		return (ft_putendl_fd(ERROR_QUOTE_SYNTAX, STDERR_FILENO), FAILURE);
 	d_token.token_len = end_position - start_index;
-	// CREAR NODO TOKEN ------------------------------------------------------
 	create_token(&word->tokens_list, &d_token);
 	return (d_token.token_len);
 }
@@ -131,7 +126,6 @@ static int	operator_tokenizer(t_word *word, int start_index)
 	d_token.token_len = get_operator_length(d_token.raw_w, start_index);
 	if (d_token.token_len == 0)
 		return (FAILURE);
-	//data_token.raw_word = NULL;
 	if (d_token.token_len == 2 && d_token.raw_w[start_index] == '>')
 		d_token.raw_w = ">>";
 	else if (d_token.token_len == 2 && d_token.raw_w[start_index] == '<')
@@ -144,29 +138,6 @@ static int	operator_tokenizer(t_word *word, int start_index)
 		d_token.raw_w = "|";
 	else
 		return (FAILURE);
-	create_token(&word->tokens_list, &d_token);// CREAR NODO TOKEN -------
+	create_token(&word->tokens_list, &d_token);
 	return (d_token.token_len);
 }
-
-/* int not_is_special_tkn(t_data_token	*d_tkn, int i)
-{
-	while (!is_space(d_tkn->raw_w[i]) // Texto normal: parar en delimitadores O en $
-	&& !is_redirection(d_tkn->raw_w[i])
-	&& !is_pipe(d_tkn->raw_w[i])
-	&& !is_quote(d_tkn->raw_w[i])
-	&& !is_expansion_char(d_tkn->raw_w[i]) // ¡CLAVE! Parar en $
-	&& d_tkn->raw_w[i])
-	i++;
-	return (i);
-} */
-
-/* {
-		
-		while (!is_space(d_tkn.raw_w[i]) // Texto normal: parar en delimitadores O en $
-			&& !is_redirection(d_tkn.raw_w[i])
-			&& !is_pipe(d_tkn.raw_w[i])
-			&& !is_quote(d_tkn.raw_w[i])
-			&& !is_expansion_char(d_tkn.raw_w[i]) // ¡CLAVE! Parar en $
-			&& d_tkn.raw_w[i])
-			i++;
-	} */

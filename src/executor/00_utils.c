@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 12:48:45 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/27 10:52:49 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 19:35:27 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	*ft_substr_malloc(const char *input, int start, int len)
 
 	if (!input || start < 0 || len < 0)
 		return (NULL);
-	substr = safe_malloc(sizeof(char) * (len + 1)); // buscar donde está 
+	substr = safe_malloc(sizeof(char) * (len + 1));
 	ft_strlcpy(substr, &input[start], len);
 	return (substr);
 }
@@ -72,20 +72,14 @@ void	ft_shellevel(t_shell *shell)
 	char	*str_value_shlvl;
 	int		int_value;
 
-	//buscar variable de entorno SHLVL y obtengo el valor
 	str_value = get_environment_var(shell->environment, "SHLVL");
-	//pasarlo a interger e incrementarlo
 	int_value = ft_atoi(str_value);
 	int_value++;
-	//Liberamos el espacio en memoria creado por get_environment y convertir int a str
 	free(str_value);
 	str_value = ft_itoa(int_value);
-	//Componer de nuevo el valor SHLVL=int
 	str_value_shlvl = ft_strjoin("SHLVL=", str_value);
-	//actualizar el contenido de la variable de entorno.
 	shell->environment = ft_add_modify_env(shell->environment, str_value_shlvl,
 			ft_valid_env_var(str_value_shlvl));
 	free(str_value);
 	free(str_value_shlvl);
 }
-

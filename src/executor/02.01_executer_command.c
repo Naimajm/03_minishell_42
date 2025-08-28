@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 12:52:44 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/27 10:53:07 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 19:40:29 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ static void	handle_command_execution(t_shell *shell, t_cmd *cmd, char *path)
 			&& ft_strchr(cmd->args[0], '/'))
 			errno = print_executer_errors(cmd->args[0],
 					"': Permission denied", 126);
-		else if (!ft_strchr(cmd->args[0], '/')) // verificar si el comando no contiene '/' (no es una ruta) y por lo tanto es un comando simple que no se pudo encontrar en el PATH:
+		else if (!ft_strchr(cmd->args[0], '/'))
 			errno = print_executer_errors(cmd->args[0],
 					"': command not found", 127);
 		else
@@ -108,15 +108,14 @@ static void	handle_command_execution(t_shell *shell, t_cmd *cmd, char *path)
 	execve(path, cmd->args, shell->environment);
 	free_matrix(cmd->args);
 	free(path);
-	ft_putendl_fd(" Is a directory", STDERR_FILENO); // salida : " Is a directory"
-	//perror("Error executing."); // salida : Error executing.: Permission denied ; mete el mensanje del sistema y por tanto no podemos controlar los errores exactos de salida
+	ft_putendl_fd(" Is a directory", STDERR_FILENO);
 	exit(126);
 }
 
 static int	print_executer_errors(char *arg, char *mesasage, int errno)
 {
-	ft_putstr_fd("minishell: `", STDERR_FILENO); // sin salto de linea
-	ft_putstr_fd(arg, STDERR_FILENO); // sin salto de linea
+	ft_putstr_fd("minishell: `", STDERR_FILENO);
+	ft_putstr_fd(arg, STDERR_FILENO);
 	ft_putendl_fd(mesasage, STDERR_FILENO);
 	return (errno);
 }

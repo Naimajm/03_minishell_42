@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/17 13:47:43 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 19:52:57 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,6 @@ static t_cmd	*find_command_last_node(t_cmd *commands_list)
 	if (!commands_list)
 		return (NULL);
 	while (commands_list->next)
-		commands_list = commands_list-> next; // retorna puntero a ultimo nodo   
+		commands_list = commands_list-> next;
 	return (commands_list);
 }

@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/17 14:39:49 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 19:53:20 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,18 @@ static int	command_extractor(t_cmd *command)
 	index = 0;
 	while (command_input[index])
 	{
-		while (is_space(command_input[index])) // ignorar espacios iniciales 
+		while (is_space(command_input[index]))
 			index++;
-		if (!command_input[index]) // Verificar si llegamos al final después de saltar espacios
+		if (!command_input[index])
 			break ;
 		if (is_redirection(command_input[index])
-			|| is_pipe(command_input[index])) // CLASIFICACION WORD // OPERATOR
+			|| is_pipe(command_input[index]))
 			word_len = operator_extractor(command, index);
 		else
 			word_len = word_extractor(command, index);
 		if (word_len == FAILURE)
 			return (FAILURE);
-		index = advance_index_by_length(index, word_len); // GESTION CASOS ESPECIALES AVANCE INDEX
+		index = advance_index_by_length(index, word_len);
 	}
 	return (SUCCESS);
 }
@@ -65,7 +65,6 @@ static int	word_extractor(t_cmd *command, int start_index)
 	data_word.cmd_input = command->command;
 	if (!command->command)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
-	// DELIMITADOR LIMITES CARACTERES WORD -------------------------------------------
 	word_end_position = find_word_end_outside_quotes(command->command,
 			start_index);
 	if (word_end_position == FAILURE)
@@ -73,7 +72,6 @@ static int	word_extractor(t_cmd *command, int start_index)
 	data_word.w_len = word_end_position - start_index;
 	data_word.w_type = WORD;
 	if (data_word.w_len > 0)
-		// CREAR NODO TOKEN ------------------------------------------------------
 		create_word(&command->words_list, &data_word);
 	return (data_word.w_len);
 }

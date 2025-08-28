@@ -6,13 +6,12 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/25 12:02:00 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 20:04:26 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-void			print_expand_nodes_list(t_expand *expand_list);
 int				insert_expand_node_value(t_token *token, int last_pos);
 t_expand		*add_expand_node(t_expand **expand_list,
 					char *substitution_variable, int first_index,
@@ -20,34 +19,6 @@ t_expand		*add_expand_node(t_expand **expand_list,
 static t_expand	*init_expand_node(char *variable, int first_index,
 					int expand_type);
 static t_expand	*find_expand_last_node(t_expand *token_list);
-
-void	print_expand_nodes_list(t_expand *expand_list)
-{
-	t_expand	*expand_node;
-	int			node_index;
-
-	if (!expand_list)
-		return ;
-	expand_node = (t_expand *)(expand_list);
-	node_index = 1;
-	while (expand_node)
-	{
-		printf("\t\t\t └────┐\n");
-		printf("\t\t\t ┌───────────────────┐\n");
-		printf("\t\t\t | expand_node: [%i]  |\n", node_index);
-		printf("\t\t\t └───────────────────┘\n");
-		printf("\t\t\t\t current node -> %p // next -> %p\n",
-			expand_node, expand_node->next);
-		printf("\t\t\t\t first_index \t-> %d\n", expand_node->first_i);
-		printf("\t\t\t\t last_index \t-> %d\n", expand_node->last_index);
-		printf("\t\t\t\t subs_variable \t-> %s\n",
-			expand_node->substitution_str);
-		printf("\t\t\t\t key \t\t-> %s\n", expand_node->key);
-		printf("\t\t\t\t └──> value \t-> %s\n", expand_node->value);
-		node_index++;
-		expand_node = expand_node->next;
-	}
-}
 
 int	insert_expand_node_value(t_token *tkn, int last_pos)
 {
@@ -63,14 +34,14 @@ int	insert_expand_node_value(t_token *tkn, int last_pos)
 		return (ft_putendl_fd(ERR_MEM_ALLOC, STDERR_FILENO), FAILURE);
 	while (curr_nod)
 	{
-		if (curr_nod->first_i > last_pos) // Añadir texto antes de la variable
+		if (curr_nod->first_i > last_pos)
 		{
 			prfx = ft_substr(tkn->raw_tkn, last_pos,
-					curr_nod->first_i - last_pos); //printf("  prefix: '%s'\n", prefix);
+					curr_nod->first_i - last_pos);
 			result = ft_strjoin_free(result, prfx);
 			free(prfx);
 		}
-		result = ft_strjoin_free(result, curr_nod->value); // Añadir el valor expandido
+		result = ft_strjoin_free(result, curr_nod->value);
 		last_pos = curr_nod->last_index + 1;
 		curr_nod = curr_nod->next;
 	}

@@ -6,26 +6,25 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/25 17:45:55 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 19:59:19 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int				not_is_special_tkn(t_data_token	*d_tkn, int i); // se necesita para reducir 25 lineas en el 04
+int				not_is_special_tkn(t_data_token	*d_tkn, int i);
 static void		add_token_node(t_token **token_list,
 					char *word, int token_type);
 static t_token	*find_token_last_node(t_token *token_list);
 static t_token	*init_token_node(char *input, int type_token);
-// void			print_tokens_list(t_token *token_list); // comentarla para pasr norminette
 
 int	not_is_special_tkn(t_data_token	*d_tkn, int i)
 {
-	while (!is_space(d_tkn->raw_w[i]) // Texto normal: parar en delimitadores O en $
+	while (!is_space(d_tkn->raw_w[i])
 		&& !is_redirection(d_tkn->raw_w[i])
 		&& !is_pipe(d_tkn->raw_w[i])
 		&& !is_quote(d_tkn->raw_w[i])
-		&& !is_expansion_char(d_tkn->raw_w[i]) // ¡CLAVE! Parar en $
+		&& !is_expansion_char(d_tkn->raw_w[i])
 		&& d_tkn->raw_w[i])
 		i++;
 	return (i);
@@ -58,9 +57,9 @@ static void	add_token_node(t_token **token_list, char *word, int token_type)
 	if (!new_node)
 		return (ft_putendl_fd(ERROR_TOKEN_INIT, STDERR_FILENO));
 	last_node = find_token_last_node(*token_list);
-	if (!last_node) // caso lista vacio -> añadir en 1º nodo
+	if (!last_node)
 		*token_list = new_node;
-	else // lista no vacia
+	else
 		last_node->next = new_node;
 }
 
@@ -92,30 +91,3 @@ static t_token	*find_token_last_node(t_token *token_list)
 		token_list = token_list-> next;
 	return (token_list);
 }
-
-/* void	print_tokens_list(t_token *token_list)
-{
-	t_token	*token;
-	int		node_index;
-
-	if (!token_list)
-		return ;
-	token = (t_token *)(token_list);
-	node_index = 1;
-	while (token)
-	{
-		printf("\t\t └───┐\n");
-		printf("\t\t ┌───────────┐\n");
-		printf("\t\t | token [%i] |\n", node_index);
-		printf("\t\t └───────────┘\n");
-		printf("\t\t\t type -> %i // ", token->type);
-		printf("current -> %p // next -> %p\n", token, token->next);
-		printf("\t\t\t raw_token \t\t-> %s\n", token->raw_tkn);
-		print_expand_nodes_list(token->expands_list); // IMPRESION LISTA NODOS EXPAND 
-		printf("\t\t\t expanded_token \t-> %s\n", token->exp_token); // TOKEN YA EXPANDIDO
-		printf("\t\t\t └──> noquotes_token \t-> %s\n", token->noquotes_token); // TOKEN sin comillas
-		node_index++;
-		token = token->next;
-	}
-	printf("\n");
-} */

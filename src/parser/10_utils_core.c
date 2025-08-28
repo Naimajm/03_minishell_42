@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:24:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/17 11:59:50 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/25 20:10:05 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ int	find_pipe_outside_quotes(char *input, int start_index)
 	{
 		update_quote_state(input[index], &in_single_quotes, &in_double_quotes);
 		if (in_single_quotes == false && in_double_quotes == false
-			&& is_pipe(input[index])) // Verificar delimitador solo fuera de todas las comillas
+			&& is_pipe(input[index]))
 			return (index);
 		index++;
 	}
-	return (index); // Devuelve final string si no encuentra delimitador
+	return (index);
 }
 
 int	find_redirection_outside_quotes(char *input, int start_index)
@@ -48,7 +48,7 @@ int	find_redirection_outside_quotes(char *input, int start_index)
 	bool	in_double_quotes;
 
 	if (!input || start_index < 0)
-		return (ft_strlen(input)); // Retorna final si no encuentra
+		return (ft_strlen(input));
 	index = start_index;
 	in_single_quotes = false;
 	in_double_quotes = false;
@@ -60,7 +60,7 @@ int	find_redirection_outside_quotes(char *input, int start_index)
 			return (index);
 		index++;
 	}
-	return (index); // Final de string
+	return (index);
 }
 
 int	find_word_end_outside_quotes(char *input, int start_index)
@@ -78,11 +78,11 @@ int	find_word_end_outside_quotes(char *input, int start_index)
 	{
 		update_quote_state(input[index], &in_single_quotes, &in_double_quotes);
 		if (in_single_quotes == false && in_double_quotes == false
-			&& is_word_delimiter(input[index])) // Verificar delimitador si fuera de todas las comillas
+			&& is_word_delimiter(input[index]))
 			return (index);
 		index++;
 	}
-	return (index); // Devuelve final string si no encuentra delimitador
+	return (index);
 }
 
 int	find_next_expansion_outside_single_quotes(const char *input,
@@ -99,8 +99,8 @@ int	find_next_expansion_outside_single_quotes(const char *input,
 	in_double_quotes = false;
 	while (input[index])
 	{
-		update_quote_state(input[index], &in_single_quotes, &in_double_quotes); // Actualizar estado de comillas
-		if (is_expansion_char(input[index]) && in_single_quotes == false) // Verificar delimitador
+		update_quote_state(input[index], &in_single_quotes, &in_double_quotes);
+		if (is_expansion_char(input[index]) && in_single_quotes == false)
 			return (index);
 		index++;
 	}
@@ -116,10 +116,10 @@ int	find_matching_quote_position(const char *input, int quote_start_index)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
 	quote = input[quote_start_index];
 	end_index = quote_start_index + 1;
-	while (input[end_index] && input[end_index] != quote) // Buscar comilla de cierre
+	while (input[end_index] && input[end_index] != quote)
 		end_index++;
 	if (input[end_index] == quote)
-		return (end_index + 1); // Incluir comilla de cierre
+		return (end_index + 1);
 	else
 		return (FAILURE);
 }
